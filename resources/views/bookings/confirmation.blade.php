@@ -17,7 +17,7 @@
             <!-- Booking Details -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">Booking Details</h3>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Booking Details</h3>
                     
                     <div class="space-y-3">
                         <div class="flex justify-between">
@@ -61,14 +61,12 @@
 
             <!-- Actions -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <a href="{{ route('courts.index') }}" 
-                   class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-center transition-colors duration-200">
+                <x-button variant="primary" href="{{ route('courts.index') }}" class="w-full">
                     Book Another Court
-                </a>
-                <button onclick="window.print()" 
-                        class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg text-center transition-colors duration-200">
+                </x-button>
+                <x-button variant="secondary" type="button" onclick="window.print()" class="w-full">
                     Print Confirmation
-                </button>
+                </x-button>
             </div>
         </div>
     </div>

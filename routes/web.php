@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [CourtController::class, 'index'])->name('courts.index');
 Route::get('/courts/{court}', [CourtController::class, 'show'])->name('courts.show')->middleware('auth');
 
+// Test route for design system components (remove after Phase 1 validation)
+Route::get('/test-components', function () {
+    return view('test-components');
+})->name('test.components');
+
 // Booking routes
 Route::middleware('auth')->group(function () {
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
