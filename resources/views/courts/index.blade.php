@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-8">
             {{ __('Tennis Court Booking') }}
         </h2>
     </x-slot>
@@ -9,18 +9,18 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h1 class="text-3xl font-bold mb-6">Available Courts</h1>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-8">Available Courts</h1>
                     
                     @if($courts->isEmpty())
                         <p class="text-gray-500">No courts available at this time.</p>
                     @else
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @foreach($courts as $court)
-                                <div class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                                <x-card variant="default" hoverable="true">
                                     @if($court->photo_url)
-                                        <img src="{{ $court->photo_url }}" alt="{{ $court->name }}" class="w-full h-48 object-cover">
+                                        <img src="{{ $court->photo_url }}" alt="{{ $court->name }}" class="w-full h-48 object-cover rounded-t-lg">
                                     @else
-                                        <div class="w-full h-48 bg-gray-300 flex items-center justify-center">
+                                        <div class="w-full h-48 bg-gray-300 flex items-center justify-center rounded-t-lg">
                                             <span class="text-gray-500 text-lg">No Image</span>
                                         </div>
                                     @endif
@@ -52,36 +52,35 @@
                                                 @forelse($displaySlots as $slot)
                                                     @php
                                                         if (in_array($slot, $court->available_slots_today ?? [])) {
-                                                            $bgColor = 'bg-green-100 text-green-800 border-green-300';
                                                             $status = 'available';
                                                         } elseif (in_array($slot, $court->booked_slots_today ?? [])) {
-                                                            $bgColor = 'bg-gray-200 text-gray-600 border-gray-300';
                                                             $status = 'booked';
                                                         } else {
-                                                            $bgColor = 'bg-yellow-100 text-yellow-800 border-yellow-300';
                                                             $status = 'locked';
                                                         }
                                                     @endphp
                                                     
-                                                    <div class="text-center p-2 rounded border {{ $bgColor }} text-xs font-medium">
-                                                        {{ \Carbon\Carbon::createFromFormat('H:i', $slot)->format('g A') }}
+                                                    <div class="flex justify-center">
+                                                        <x-badge :status="$status" size="small">
+                                                            {{ \Carbon\Carbon::createFromFormat('H:i', $slot)->format('g A') }}
+                                                        </x-badge>
                                                     </div>
                                                 @empty
                                                     <p class="col-span-4 text-sm text-gray-500">No slots available</p>
                                                 @endforelse
                                             </div>
                                             
-                                            <div class="flex gap-4 text-xs text-gray-600 mb-3">
+                                            <div class="flex flex-wrap gap-3 text-xs text-gray-600 mb-3">
                                                 <div class="flex items-center gap-1">
-                                                    <span class="w-3 h-3 bg-green-100 border border-green-300 rounded"></span>
+                                                    <x-badge status="available" size="small" />
                                                     <span>Available</span>
                                                 </div>
                                                 <div class="flex items-center gap-1">
-                                                    <span class="w-3 h-3 bg-gray-200 border border-gray-300 rounded"></span>
+                                                    <x-badge status="booked" size="small" />
                                                     <span>Booked</span>
                                                 </div>
                                                 <div class="flex items-center gap-1">
-                                                    <span class="w-3 h-3 bg-yellow-100 border border-yellow-300 rounded"></span>
+                                                    <x-badge status="locked" size="small" />
                                                     <span>Locked</span>
                                                 </div>
                                             </div>
@@ -97,7 +96,7 @@
                                             @endauth
                                         </div>
                                     </div>
-                                </div>
+                                </x-card>
                             @endforeach
                         </div>
                     @endif

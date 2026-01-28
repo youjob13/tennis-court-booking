@@ -69,52 +69,48 @@
                         Use any card number EXCEPT those ending in '0000' (which will simulate a payment failure).
                     </div>
 
-                    <form action="{{ route('bookings.payment.process', $booking) }}" method="POST" id="paymentForm">
+                    <form action="{{ route('bookings.payment.process', $booking) }}" method="POST" id="paymentForm" x-data="{ loading: false }" @submit="loading = true">
                         @csrf
 
-                        <div class="mb-4">
-                            <label for="card_number" class="block text-sm font-medium text-gray-700 mb-2">Card Number</label>
-                            <input type="text" 
-                                   name="card_number" 
-                                   id="card_number" 
-                                   required 
-                                   maxlength="16"
-                                   pattern="\d{16}"
-                                   placeholder="1234567812345678"
-                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        </div>
+                        <x-form-input 
+                            name="card_number" 
+                            type="text" 
+                            label="Card Number" 
+                            :required="true"
+                            placeholder="1234567812345678"
+                            :error="$errors->first('card_number')"
+                            maxlength="16"
+                            pattern="\d{16}"
+                            class="mb-4"
+                        />
 
                         <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div>
-                                <label for="card_expiry" class="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
-                                <input type="text" 
-                                       name="card_expiry" 
-                                       id="card_expiry" 
-                                       required 
-                                       maxlength="5"
-                                       pattern="\d{2}/\d{2}"
-                                       placeholder="MM/YY"
-                                       class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
+                            <x-form-input 
+                                name="card_expiry" 
+                                type="text" 
+                                label="Expiry Date" 
+                                :required="true"
+                                placeholder="MM/YY"
+                                :error="$errors->first('card_expiry')"
+                                maxlength="5"
+                                pattern="\d{2}/\d{2}"
+                            />
 
-                            <div>
-                                <label for="card_cvv" class="block text-sm font-medium text-gray-700 mb-2">CVV</label>
-                                <input type="text" 
-                                       name="card_cvv" 
-                                       id="card_cvv" 
-                                       required 
-                                       maxlength="3"
-                                       pattern="\d{3}"
-                                       placeholder="123"
-                                       class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
+                            <x-form-input 
+                                name="card_cvv" 
+                                type="text" 
+                                label="CVV" 
+                                :required="true"
+                                placeholder="123"
+                                :error="$errors->first('card_cvv')"
+                                maxlength="3"
+                                pattern="\d{3}"
+                            />
                         </div>
 
-                        <button type="submit" 
-                                id="submitBtn"
-                                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200">
+                        <x-button variant="primary" type="submit" id="submitBtn" class="w-full" x-bind:loading="loading">
                             Complete Payment - ${{ number_format($booking->total_price, 2) }}
-                        </button>
+                        </x-button>
                     </form>
                 </div>
             </div>

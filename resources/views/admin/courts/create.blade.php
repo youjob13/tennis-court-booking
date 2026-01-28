@@ -4,9 +4,9 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Add New Court') }}
             </h2>
-            <a href="{{ route('admin.courts.index') }}" class="text-gray-600 hover:text-gray-900">
+            <x-button variant="link" href="{{ route('admin.courts.index') }}">
                 ← Back to Courts
-            </a>
+            </x-button>
         </div>
     </x-slot>
 
@@ -24,41 +24,44 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <form action="{{ route('admin.courts.store') }}" method="POST">
+                    <form action="{{ route('admin.courts.store') }}" method="POST" x-data="{ loading: false }" @submit="loading = true">
                         @csrf
 
-                        <div class="mb-4">
-                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Court Name <span class="text-red-500">*</span></label>
-                            <input type="text" 
-                                   name="name" 
-                                   id="name" 
-                                   required 
-                                   maxlength="255"
-                                   value="{{ old('name') }}"
-                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        </div>
+                        <x-form-input 
+                            name="name" 
+                            type="text" 
+                            label="Court Name" 
+                            :required="true"
+                            :value="old('name')"
+                            :error="$errors->first('name')"
+                            maxlength="255"
+                            class="mb-4"
+                        />
 
                         <div class="mb-4">
-                            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <x-form-label for="description" label="Description" />
                             <textarea name="description" 
                                       id="description" 
                                       rows="3"
-                                      class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('description') }}</textarea>
+                                      class="block w-full px-4 py-2 border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">{{ old('description') }}</textarea>
+                            @if($errors->first('description'))
+                                <x-form-error :message="$errors->first('description')" />
+                            @endif
                         </div>
 
-                        <div class="mb-4">
-                            <label for="photo_url" class="block text-sm font-medium text-gray-700 mb-2">Photo URL</label>
-                            <input type="url" 
-                                   name="photo_url" 
-                                   id="photo_url" 
-                                   maxlength="500"
-                                   value="{{ old('photo_url') }}"
-                                   placeholder="https://example.com/image.jpg"
-                                   class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        </div>
+                        <x-form-input 
+                            name="photo_url" 
+                            type="url" 
+                            label="Photo URL" 
+                            :value="old('photo_url')"
+                            :error="$errors->first('photo_url')"
+                            placeholder="https://example.com/image.jpg"
+                            maxlength="500"
+                            class="mb-4"
+                        />
 
                         <div class="mb-4">
-                            <label for="hourly_price" class="block text-sm font-medium text-gray-700 mb-2">Hourly Price <span class="text-red-500">*</span></label>
+                            <x-form-label for="hourly_price" :required="true">Hourly Price</x-form-label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <span class="text-gray-500 sm:text-sm">$</span>
@@ -71,37 +74,40 @@
                                        max="9999.99"
                                        step="0.01"
                                        value="{{ old('hourly_price') }}"
-                                       class="w-full pl-7 border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                       class="block w-full pl-7 px-4 py-2 border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                             </div>
+                            @if($errors->first('hourly_price'))
+                                <x-form-error :message="$errors->first('hourly_price')" />
+                            @endif
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label for="operating_hours_start" class="block text-sm font-medium text-gray-700 mb-2">Opening Time <span class="text-red-500">*</span></label>
-                                <input type="time" 
-                                       name="operating_hours_start" 
-                                       id="operating_hours_start" 
-                                       required
-                                       value="{{ old('operating_hours_start', '08:00') }}"
-                                       class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <x-form-input 
+                                name="operating_hours_start" 
+                                type="time" 
+                                label="Opening Time" 
+                                :required="true"
+                                :value="old('operating_hours_start', '08:00')"
+                                :error="$errors->first('operating_hours_start')"
+                            />
 
-                            <div>
-                                <label for="operating_hours_end" class="block text-sm font-medium text-gray-700 mb-2">Closing Time <span class="text-red-500">*</span></label>
-                                <input type="time" 
-                                       name="operating_hours_end" 
-                                       id="operating_hours_end" 
-                                       required
-                                       value="{{ old('operating_hours_end', '22:00') }}"
-                                       class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            </div>
+                            <x-form-input 
+                                name="operating_hours_end" 
+                                type="time" 
+                                label="Closing Time" 
+                                :required="true"
+                                :value="old('operating_hours_end', '22:00')"
+                                :error="$errors->first('operating_hours_end')"
+                            />
                         </div>
 
-                        <div class="flex items-center justify-end space-x-4">
-                            <a href="{{ route('admin.courts.index') }}" class="text-gray-600 hover:text-gray-900">Cancel</a>
-                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-200">
+                        <div class="flex items-center justify-end gap-4">
+                            <x-button variant="link" href="{{ route('admin.courts.index') }}">
+                                Cancel
+                            </x-button>
+                            <x-button variant="primary" type="submit" x-bind:loading="loading">
                                 Create Court
-                            </button>
+                            </x-button>
                         </div>
                     </form>
                 </div>

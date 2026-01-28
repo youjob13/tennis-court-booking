@@ -8,9 +8,9 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-6">
-                <a href="{{ route('courts.index') }}" class="text-blue-600 hover:text-blue-800">
+                <x-button variant="link" href="{{ route('courts.index') }}">
                     ← Back to Courts
-                </a>
+                </x-button>
             </div>
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
@@ -20,7 +20,7 @@
                     @endif
 
                     <div class="mb-6">
-                        <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ $court->name }}</h1>
+                        <h1 class="text-2xl font-semibold text-gray-800 mb-2">{{ $court->name }}</h1>
                         <p class="text-gray-600 text-lg">{{ $court->description }}</p>
                     </div>
 
@@ -48,7 +48,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('bookings.store') }}" method="POST" id="bookingForm">
+                    <form action="{{ route('bookings.store') }}" method="POST" id="bookingForm" x-data="{ loading: false }" @submit="loading = true">
                         @csrf
                         <input type="hidden" name="court_id" value="{{ $court->id }}">
 
@@ -92,9 +92,9 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200">
+                        <x-button variant="primary" type="submit" class="w-full" x-bind:loading="loading">
                             Proceed to Payment
-                        </button>
+                        </x-button>
                     </form>
                 </div>
             </div>
