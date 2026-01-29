@@ -46,13 +46,39 @@ class BookingController extends Controller
             return back()->withErrors(['court_id' => 'This court is not available for booking.']);
         }
 
-        // Check if slot is available
-        if (! $this->availabilityService->isSlotAvailable(
+        // Phase 3 - Task T017: Enhanced validation with specific error messages
+        // Check available durations for the selected start time
+        $availableDurations = $this->availabilityService->getAvailableDurationsForSlot(
             $validated['court_id'],
-            $validated['start_datetime'],
-            $validated['duration_hours']
-        )) {
-            return back()->withErrors(['start_datetime' => 'Time slot is no longer available.'])->withInput();
+            $validated['start_datetime']
+        );
+        
+        // Specific error message based on failure type
+        if (empty($availableDurations)) {
+            // Slot is completely unavailable (start time is booked/locked)
+            $booking = \App\Models\Booking::where('court_id', $validated['court_id'])
+                ->where('start_datetime', '<=', $validated['start_datetime'])
+                ->whereIn('status', ['locked', 'confirmed'])
+                ->whereRaw('start_datetime + (duration_hours || \' hours\')::interval > ?', [$validated['start_datetime']])
+                ->first();
+            
+            if ($booking && $booking->status === 'locked') {
+                return back()->withErrors([
+                    'start_datetime' => 'This time slot is temporarily reserved by another user. Please wait or select a different time.'
+                ])->withInput();
+            } else {
+                return back()->withErrors([
+                    'start_datetime' => 'This time slot is already booked. Please select a different time.'
+                ])->withInput();
+            }
+        }
+        
+        // Check if requested duration is available
+        if (!in_array($validated['duration_hours'], $availableDurations)) {
+            $maxDuration = max($availableDurations);
+            return back()->withErrors([
+                'duration_hours' => "Selected duration conflicts with existing bookings. Maximum available duration is {$maxDuration} hour(s)."
+            ])->withInput();
         }
 
         // Validate operating hours
